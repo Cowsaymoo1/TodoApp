@@ -5,9 +5,10 @@ import { Button } from "./ui/button";
 import { Filter } from "lucide-react";
 
 const StatsAndFilters = ({
-  completeTasksCount = 0,
+  completedTasksCount = 0,
   activeTasksCount = 0,
   filter = "all",
+  setFilter,
 }) => {
   return (
     <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -24,7 +25,7 @@ const StatsAndFilters = ({
           variant="secondary"
           className="bg-white/50 text-success border-success/20"
         >
-          {completeTasksCount} {FilterTypes.completed}
+          {completedTasksCount} {FilterTypes.completed}
         </Badge>
       </div>
       {/* Filters Section */}
@@ -35,6 +36,7 @@ const StatsAndFilters = ({
             variant={filter === type ? "gradient" : "ghost"}
             size="sm"
             className="capitalize"
+            onClick={() => setFilter(type)}
           >
             <Filter className="size-4" />
             {FilterTypes[type]}
