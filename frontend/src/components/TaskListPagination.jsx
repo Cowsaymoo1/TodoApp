@@ -1,11 +1,87 @@
-import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
-const TaskListPagination = () => {
+const TaskListPagination = ({
+  handleNext,
+  handlePrev,
+  handlePageChanged,
+  page,
+  totalPages,
+}) => {
+  const generatePages = () => {
+    const pages = [];
+
+    if (totalPages < 4) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (page < 2) {
+        pages.push(1, 2, 3, "...", totalPages);
+      } else if (page >= totalPages - 1) {
+        pages.push(1, "...", totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, "...", page, "...", totalPages);
+      }
+    }
+    return pages;
+  };
+
+  const pageToShow = generatePages();
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <div className="flex justify-center mt-4">
+      <Pagination>
+        <PaginationContent>
+          {/* {prev button} */}
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={page === 1 ? undefined : handlePrev}
+              className={cn(
+                "cursor=pointer",
+                page === 1 && "pointer-events-none opacity-50"
+              )}
+            />
+          </PaginationItem>
+          {pageToShow.map((p, index) => (
+            <PaginationItem key={index}>
+              {p === "..." ? (
+                <PaginationEllipsis />
+              ) : (
+                <PaginationLink
+                  isActive={p === page}
+                  onClick={() => {
+                    if (p !== page) handlePageChanged(p);
+                  }}
+                  className="cursor-pointer"
+                >
+                  {p}
+                </PaginationLink>
+              )}
+            </PaginationItem>
+          ))}
 
-export default TaskListPagination
+          {/* {next} */}
+          <PaginationItem>
+            <PaginationNext
+              onClick={page === totalPages ? undefined : handleNext}
+              className={cn(
+                "cursor=pointer",
+                page === totalPages && "pointer-events-none opacity-50"
+              )}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
+  );
+};
+
+export default TaskListPagination;
