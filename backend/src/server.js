@@ -14,14 +14,24 @@ const __dirname = path.resolve();
 
 const app = express();
 
+if(process.env.NODE_ENV !== "production"){
+    app.use(cors({origin: "http://localhost:5173"}));
+}
+
 // middlewares
-app.use(cors({origin: "http://localhost:5173"}));
+
 
 app.use(express.json());
 
 app.use("/api/tasks", tasksRoutes);
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+    app.length("*", (req, res) => {
+        res.senFile(path.join(__dirname, "../frontend/dist/index.html"));
+    });
+}
 
 
 
